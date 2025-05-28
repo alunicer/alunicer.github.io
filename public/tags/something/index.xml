@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Something on 阿伦的仓库</title>
+    <link>http://localhost:1313/tags/something/</link>
+    <description>Recent content in Something on 阿伦的仓库</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 01 Jan 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/something/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>第一条blog</title>
+      <link>http://localhost:1313/post/a-blog-post/</link>
+      <pubDate>Wed, 01 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/post/a-blog-post/</guid>
+      <description>&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod&#xA;tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,&#xA;quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo&#xA;consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse&#xA;cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non&#xA;proident, sunt in culpa qui officia deserunt mollit anim id est laborum.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>阿伦见花小记</title>
+      <link>http://localhost:1313/post/%E9%98%BF%E4%BC%A6%E9%81%87%E8%8A%B1%E5%B0%8F%E8%AE%B0/</link>
+      <pubDate>Wed, 01 Jan 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/post/%E9%98%BF%E4%BC%A6%E9%81%87%E8%8A%B1%E5%B0%8F%E8%AE%B0/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

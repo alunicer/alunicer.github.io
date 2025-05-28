@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Specimen on 阿伦的仓库</title>
+    <link>http://localhost:1313/tags/specimen/</link>
+    <description>Recent content in Specimen on 阿伦的仓库</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 08 Aug 2017 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/specimen/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Just one more after this</title>
+      <link>http://localhost:1313/photos/only-one-more-after-this/</link>
+      <pubDate>Tue, 08 Aug 2017 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/photos/only-one-more-after-this/</guid>
+      <description>&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod&#xA;tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,&#xA;quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo&#xA;consequat.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>
