@@ -19,16 +19,15 @@ summaryLength = 0
   email = "alun.h@qq.com"
   favicon = "icon/favicon.jpg"
   about = """
-
+这里是阿伦的个人记录空间，不定时更新，随时删档重来
 
 
 """
 
   [[params.links]]
-    [[params.links.link]]
-      name = "About"
-      href = "https://github.com/mavidser/hugo-rocinante?tab=readme-ov-file"
-      new_tab = true
+    
+      
+      
     [[params.links.link]]
       name = "Email"
       href = "/contact"
