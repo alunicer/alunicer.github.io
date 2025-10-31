@@ -1,361 +1,733 @@
 <!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>花开四季</title>
+    <style>
+        /* 基础样式重置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  <html data-color-scheme="light">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        /* 全局样式 */
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f7;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
 
-<title>花开四季 · 阿伦的仓库</title>
+        /* 页头样式 */
+        .page-header {
+            background: linear-gradient(135deg, #4a6fa5 0%, #6b4a9e 100%);
+            color: white;
+            padding: 4rem 2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
 
+        .header-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
 
+        .page-header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 0.8rem;
+            letter-spacing: 0.5px;
+        }
 
+        .page-header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
 
+        /* 主容器：导航 + 内容 */
+        .main-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
 
-<link rel="stylesheet" href="/css/rocinante.min.css" />
-<link rel="shortcut icon" href="icon/favicon.jpg">
+        /* 右侧月份导航 */
+        .month-nav {
+            width: 220px;
+            position: sticky;
+            top: 20px;
+            align-self: flex-start;
+            height: calc(100vh - 100px);
+            overflow-y: auto;
+            padding-right: 1.5rem;
+        }
 
+        #month-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
 
+        .month-item {
+            display: block;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            color: #555;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .month-item:hover {
+            background: #f0f0f5;
+            transform: translateX(5px);
+        }
+
+        .month-item.active {
+            background: #6b4a9e;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* 相册主内容区 */
+        .album-container {
+            flex: 1;
+            padding-left: 1.5rem;
+        }
+
+        /* 照片分组样式 */
+        .photo-group {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 分组标题和描述 */
+        .group-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .group-title {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            margin-bottom: 0.8rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .group-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 3px;
+            background-color: #6b4a9e;
+        }
+
+        .group-desc {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.7;
+        }
+
+        /* 照片网格布局 - 优化为适合1024×768比例 */
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* 照片项样式 */
+        .photo-item {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: box-shadow 0.3s ease;
+            background-color: #f8f8f8;
+        }
+
+        .photo-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 图片样式 - 适配1024×768比例 */
+        .photo-img {
+            width: 100%;
+            height: 225px; /* 1024:768 = 4:3 比例的高度 */
+            object-fit: cover; /* 裁切图片以适应容器 */
+            display: block;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .photo-img:hover {
+            opacity: 0.95;
+        }
+
+        /* 图片加载指示器 */
+        .photo-loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #6b4a9e;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* 模态框样式 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            cursor: zoom-out;
+        }
+
+        .modal-img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        /* 页脚样式 */
+        .page-footer {
+            text-align: center;
+            padding: 2.5rem 1rem;
+            color: #999;
+            font-size: 0.95rem;
+            border-top: 1px solid #eee;
+            margin-top: 4rem;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 1200px) {
+            .photo-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+            .photo-img {
+                height: 210px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .month-nav {
+                width: 200px;
+            }
+            .photo-grid {
+                grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            }
+            .photo-img {
+                height: 195px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .photo-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+            .photo-img {
+                height: 180px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .month-nav {
+                width: 100%;
+                position: static;
+                height: auto;
+                padding-right: 0;
+                margin-bottom: 2rem;
+            }
+
+            #month-list {
+                flex-direction: row;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+
+            .month-item {
+                min-width: 120px;
+                text-align: center;
+            }
+
+            .album-container {
+                padding-left: 0;
+            }
+
+            .page-header h1 {
+                font-size: 2.2rem;
+            }
+
+            .photo-group {
+                padding: 1.5rem;
+            }
+
+            .group-title {
+                font-size: 1.5rem;
+            }
+
+            .photo-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 1rem;
+            }
+
+            .photo-img {
+                height: 165px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .photo-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+            .photo-img {
+                height: 135px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .photo-grid {
+                grid-template-columns: 1fr;
+            }
+            .photo-img {
+                height: 300px;
+            }
+            .page-header {
+                padding: 3rem 1.5rem;
+            }
+            .page-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
 <body>
-    <header><h2>
-  
-    <a href="https://example.com/">‹ 阿伦的仓库</a>
-  
-</h2>
-</header>
-    <main>
-
-    <div class="post">
-        <div class="title-group">
-            <div class="title">
-                <h1>花开四季</h1>
-            </div>
-            <div class="date"><h5>Jun 13, 2025</h5></div>
-        </div>
-        <article class="content">
+    <header class="page-header">
+        <div class="header-content">
+            <h1>花开四季</h1>
             <p>看花却不认花，拍花却不识花</p>
-<p>按图索骥，略以小记</p>
-<h2 id="三色堇">三色堇</h2>
-<ul>
-<li>摄于2月绿化带</li>
-<li>绿化带点缀，死一批换一批，浓浓的廉价味</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/17/9fac0745d3f0fc81.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div> 
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/17/1c6fd0993810e891.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>
-<br/><br/>
-<br/>
-<h2 id="紫叶李">紫叶李</h2>
-<ul>
-<li>摄于3月</li>
-<li>花梗长，花瓣白</li>
-<li>后来也吃到果子了，非常酸</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/19/22c9a28cfc7fc76b.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="樱花">樱花</h2>
-<ul>
-<li>摄于3月</li>
-<li>花瓣尖端有缺口</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/18/5e583903346b4d6e.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/18/a13138742bd72a00.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/18/1fb91a5711b66285.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="梅">梅</h2>
-<ul>
-<li>摄于3月植物园</li>
-<li>花梗短，花瓣圆</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/17/3cca0eeb118f0742.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/17/b1e5efc5d3b7f63b.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="金缕梅">金缕梅</h2>
-<ul>
-<li>摄于3月植物园</li>
-<li>这个也是梅花，没想到吧</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/16/1e5763d88b5ec233.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="郁金香">郁金香</h2>
-<ul>
-<li>摄于3月太子湾</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/19/fc692284c576da4f.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/19/387019884b6cf3cf.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/19/99b0f381cffe2be9.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="连翘">连翘</h2>
-<ul>
-<li>摄于3月太子湾</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/16/9df779e1397b7709.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="阿拉伯婆婆纳">阿拉伯婆婆纳</h2>
-<ul>
-<li>摄于3月</li>
-<li>路边的小野花，一长一大片</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/17/2b6a5033b27bf2c4.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="十大功劳">十大功劳</h2>
-<ul>
-<li>摄于3月</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/17/65301f1caf9ef2ec.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="细叶美女樱">细叶美女樱</h2>
-<ul>
-<li>摄于4-6月</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/17/44b3b6e1d9e53eb8.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div> 
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/18/29563757b6c5aff2.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="油菜花">油菜花</h2>
-<ul>
-<li>摄于4月</li>
-<li>山下的已经谢了，山上开的正盛</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/19/a1800a5ce6279918.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/19/aa476e6c8213440a.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="映山红">映山红</h2>
-<ul>
-<li>摄于4月</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/18/327101de97d48ca2.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/18/73bba5838dccb83e.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="小果秤锤树">小果秤锤树</h2>
-<ul>
-<li>摄于4月临安</li>
-<li>国家二级重点保护野生植物</li>
-<li>不知道有没有机会看到秤锤果</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/18/76cafe121f14c596.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="杜鹃">杜鹃</h2>
-<ul>
-<li>摄于4月</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/16/20fdafedd7e3c417.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="石榴">石榴</h2>
-<ul>
-<li>摄于5月</li>
-<li>不知道这里还有石榴，等我秋天再来</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/17/a74e939bad8447a6.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/17/88545eef93914f24.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="金丝桃">金丝桃</h2>
-<ul>
-<li>摄于5月</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/16/9ffeddb457d55c48.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/19/3bc8250611cb8742.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="粉花绣线菊">粉花绣线菊</h2>
-<ul>
-<li>摄于5月</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/20/deeac55bebf89222.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/20/4cb80e22ab14fce8.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="日本女贞">日本女贞</h2>
-<ul>
-<li>摄于5月</li>
-<li>全在绿化带</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/20/067c2430b56213ae.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/20/3ede204280ab19ec.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="东南景天">东南景天</h2>
-<ul>
-<li>摄于5月</li>
-<li>真是漫山遍野</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/20/f30dd386c1163b6e.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/20/4bbca2b3ee31fd62.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/20/f33b51783f9a5b7d.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="南天竹">南天竹</h2>
-<ul>
-<li>摄于5月</li>
-<li>全株有毒</li>
-<li>虽然长的像竹，名字里有竹，但不是竹</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/20/0acba6bb2eb54dfd.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/20/bfcf0d56df6a1f78.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="卷丹">卷丹</h2>
-<ul>
-<li>摄于6月植物园</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/16/1bcfe746620170eb.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="绣球">绣球</h2>
-<ul>
-<li>摄于6月植物园</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/18/55d01703758cc5b6.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="紫玉簪">紫玉簪</h2>
-<ul>
-<li>摄于6月植物园</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/19/636854ffdf2de569.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="银薇">银薇</h2>
-<ul>
-<li>摄于8月</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/18/1930600a556f37ee.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/18/1930600a556f37ee.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="石蒜">石蒜</h2>
-<ul>
-<li>摄于9月</li>
-<li>又名彼岸花，换个名字一下子有了禅学的意境</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/17/ee5ac65a1ad54437.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="忽地笑">忽地笑</h2>
-<ul>
-<li>摄于9月</li>
-<li>与石蒜同一属</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/16/9ab00e4b15ae38b7.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="百日菊">百日菊</h2>
-<ul>
-<li>摄于11月</li>
-<li>得名于开花能有一百天</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/16/0abb5c5b2c1fdeb9.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-<h2 id="波斯菊">波斯菊</h2>
-<ul>
-<li>摄于11月</li>
-</ul>
-<div align="center">
-<img src="https://s3.bmp.ovh/imgs/2025/05/16/7c193233ce3f5dfb.jpg" alt="图片加载失败" width="300" class="jop-noMdConv">
-</div>  
-    <br/><br/>
-        </article>
-        
-            <div class="tags">
-                <span title="Tags">🏷</span>
-                <div class="horizontal-links links">
-                    <a href="/tags/">Tags</a>
-                </div>
-            </div>
-        
-    </article>
+            <p>按图索骥，略以小记</p>
+        </div>
+    </header>
 
+    <div class="main-container">
+        <!-- 右侧月份目录 -->
+        <aside class="month-nav">
+            <nav id="month-list">
+                <!-- 由JS动态生成 -->
+            </nav>
+        </aside>
 
-    </main>
-    <footer>
-  <div class="content-container">
-    <div class="content">这里是阿伦的个人记录空间，不定时更新，随时删档重来
+        <!-- 相册主内容区 -->
+        <main class="album-container" id="album-scroll">
+            <!-- 由JS动态生成 -->
+        </main>
+    </div>
 
+    <footer class="page-footer">
+        <p>我的相册</p>
+    </footer>
 
-  <p class="horizontal-links"><a href="/contact"
-       
-        class="email-hook" id="about-email" title="Click to show email" 
-      >Email</a></p>
-
-</div>
-  </div>
-</footer>
-    
     <script>
-      const emailId = atob("YWx1bi5oQHFxLmNvbQ==");
+        // 相册数据 - 请根据你的需求修改
+        const albumData = [
+    {
+        groupTitle: "三色堇",
+        groupDesc: "绿化带点缀，死一批换一批，浓浓的廉价味",
+        date: "2025-02-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/17/9fac0745d3f0fc81.jpg", alt: "三色堇特写1" },
+            { url: "https://s3.bmp.ovh/imgs/2025/05/17/1c6fd0993810e891.jpg", alt: "三色堇特写2" }
+        ]
+    },
+    {
+        groupTitle: "紫叶李",
+        groupDesc: "花梗长，花瓣白，后来也吃到果子了，非常酸",
+        date: "2025-03-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/19/22c9a28cfc7fc76b.jpg", alt: "紫叶李" }
+        ]
+    },
+    {
+        groupTitle: "樱花",
+        groupDesc: "花瓣尖端有缺口",
+        date: "2025-03-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/18/5e583903346b4d6e.jpg", alt: "樱花盛开1" },
+            { url: "https://s3.bmp.ovh/imgs/2025/05/18/a13138742bd72a00.jpg", alt: "樱花盛开2" },
+            { url: "https://s3.bmp.ovh/imgs/2025/05/18/1fb91a5711b66285.jpg", alt: "樱花盛开3" }
+        ]
+    },
+    {
+        groupTitle: "梅",
+        groupDesc: "花梗短，花瓣圆",
+        date: "2025-03-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/17/3cca0eeb118f0742.jpg", alt: "梅1" },
+            { url: "https://s3.bmp.ovh/imgs/2025/05/17/b1e5efc5d3b7f63b.jpg", alt: "梅2" }
+        ]
+    },
+    {
+        groupTitle: "金缕梅",
+        groupDesc: "这个也是梅花，没想到吧",
+        date: "2025-03-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/16/1e5763d88b5ec233.jpg", alt: "金缕梅" }
+        ]
+    },
+    {
+        groupTitle: "郁金香",
+        groupDesc: "摄于太子湾",
+        date: "2025-03-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/19/fc692284c576da4f.jpg", alt: "郁金香1" },
+            { url: "https://s3.bmp.ovh/imgs/2025/05/19/387019884b6cf3cf.jpg", alt: "郁金香2" },
+            { url: "https://s3.bmp.ovh/imgs/2025/05/19/99b0f381cffe2be9.jpg", alt: "郁金香3" }
+        ]
+    },
+    {
+        groupTitle: "连翘",
+        groupDesc: "摄于太子湾",
+        date: "2025-03-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/16/9df779e1397b7709.jpg", alt: "连翘" }
+        ]
+    },
+    {
+        groupTitle: "阿拉伯婆婆纳",
+        groupDesc: "路边的小野花，一长一大片",
+        date: "2025-03-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/17/2b6a5033b27bf2c4.jpg", alt: "阿拉伯婆婆纳" }
+        ]
+    },
+    {
+        groupTitle: "十大功劳",
+        groupDesc: "",
+        date: "2025-03-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/17/65301f1caf9ef2ec.jpg", alt: "十大功劳" }
+        ]
+    },
+    {
+        groupTitle: "细叶美女樱",
+        groupDesc: "",
+        date: "2025-04-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/17/44b3b6e1d9e53eb8.jpg", alt: "细叶美女樱1" },
+            { url: "https://s3.bmp.ovh/imgs/2025/05/18/29563757b6c5aff2.jpg", alt: "细叶美女樱2" }
+        ]
+    },
+    {
+        groupTitle: "油菜花",
+        groupDesc: "山下的已经谢了，山上开的正盛",
+        date: "2025-04-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/19/a1800a5ce6279918.jpg", alt: "油菜花1" },
+            { url: "https://s3.bmp.ovh/imgs/2025/05/19/aa476e6c8213440a.jpg", alt: "油菜花2" }
+        ]
+    },
+    {
+        groupTitle: "映山红",
+        groupDesc: "",
+        date: "2025-04-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/18/327101de97d48ca2.jpg", alt: "映山红1" },
+            { url: "https://s3.bmp.ovh/imgs/2025/05/18/73bba5838dccb83e.jpg", alt: "映山红2" }
+        ]
+    },
+    {
+        groupTitle: "小果秤锤树",
+        groupDesc: "国家二级重点保护野生植物，不知道有没有机会看到秤锤果",
+        date: "2025-04-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/18/76cafe121f14c596.jpg", alt: "小果秤锤树" }
+        ]
+    },
+    {
+        groupTitle: "杜鹃",
+        groupDesc: "",
+        date: "2025-04-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/16/20fdafedd7e3c417.jpg", alt: "杜鹃" }
+        ]
+    },
+    {
+        groupTitle: "石榴",
+        groupDesc: "不知道这里还有石榴，等我秋天再来",
+        date: "2025-05-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/17/a74e939bad8447a6.jpg", alt: "石榴1" },
+            { url: "https://s3.bmp.ovh/imgs/2025/05/17/88545eef93914f24.jpg", alt: "石榴2" }
+        ]
+    },
+    {
+        groupTitle: "金丝桃",
+        groupDesc: "",
+        date: "2025-05-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/16/9ffeddb457d55c48.jpg", alt: "金丝桃1" },
+            { url: "https://s3.bmp.ovh/imgs/2025/05/19/3bc8250611cb8742.jpg", alt: "金丝桃2" }
+        ]
+    },
+    {
+        groupTitle: "粉花绣线菊",
+        groupDesc: "",
+        date: "2025-05-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/20/deeac55bebf89222.jpg", alt: "粉花绣线菊1" },
+            { url: "https://s3.bmp.ovh/imgs/2025/05/20/4cb80e22ab14fce8.jpg", alt: "粉花绣线菊2" }
+        ]
+    },
+    {
+        groupTitle: "日本女贞",
+        groupDesc: "全在绿化带",
+        date: "2025-05-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/20/067c2430b56213ae.jpg", alt: "日本女贞1" },
+            { url: "https://s3.bmp.ovh/imgs/2025/05/20/3ede204280ab19ec.jpg", alt: "日本女贞2" }
+        ]
+    },
+    {
+        groupTitle: "东南景天",
+        groupDesc: "真是漫山遍野",
+        date: "2025-05-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/20/f30dd386c1163b6e.jpg", alt: "东南景天1" },
+            { url: "https://s3.bmp.ovh/imgs/2025/05/20/4bbca2b3ee31fd62.jpg", alt: "东南景天2" },
+            { url: "https://s3.bmp.ovh/imgs/2025/05/20/f33b51783f9a5b7d.jpg", alt: "东南景天3" }
+        ]
+    },
+    {
+        groupTitle: "南天竹",
+        groupDesc: "全株有毒，虽然长的像竹，名字里有竹，但不是竹",
+        date: "2025-05-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/20/0acba6bb2eb54dfd.jpg", alt: "南天竹1" },
+            { url: "https://s3.bmp.ovh/imgs/2025/05/20/bfcf0d56df6a1f78.jpg", alt: "南天竹2" }
+        ]
+    },
+    {
+        groupTitle: "卷丹",
+        groupDesc: "摄于植物园",
+        date: "2024-06-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/16/1bcfe746620170eb.jpg", alt: "卷丹" }
+        ]
+    },
+    {
+        groupTitle: "绣球",
+        groupDesc: "摄于植物园",
+        date: "2024-06-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/18/55d01703758cc5b6.jpg", alt: "绣球" }
+        ]
+    },
+    {
+        groupTitle: "紫玉簪",
+        groupDesc: "摄于植物园",
+        date: "2025-06-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/19/636854ffdf2de569.jpg", alt: "紫玉簪" }
+        ]
+    },
+    {
+        groupTitle: "银薇",
+        groupDesc: "",
+        date: "2024-08-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/18/1930600a556f37ee.jpg", alt: "银薇" }
+        ]
+    },
+    {
+        groupTitle: "石蒜",
+        groupDesc: "又名彼岸花，换个名字一下子有了禅学的意境",
+        date: "2024-09-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/17/ee5ac65a1ad54437.jpg", alt: "石蒜" }
+        ]
+    },
+    {
+        groupTitle: "忽地笑",
+        groupDesc: "与石蒜同一属",
+        date: "2024-09-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/16/9ab00e4b15ae38b7.jpg", alt: "忽地笑" }
+        ]
+    },
+    {
+        groupTitle: "百日菊",
+        groupDesc: "得名于开花能有一百天",
+        date: "2024-11-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/16/0abb5c5b2c1fdeb9.jpg", alt: "百日菊" }
+        ]
+    },
+    {
+        groupTitle: "波斯菊",
+        groupDesc: "",
+        date: "2024-11-01",
+        photos: [
+            { url: "https://s3.bmp.ovh/imgs/2025/05/16/7c193233ce3f5dfb.jpg", alt: "波斯菊" }
+        ]
+    }
+];
+
+        // 按日期排序（从早到晚）
+        albumData.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        // 生成相册内容和目录
+        const albumContainer = document.getElementById('album-scroll');
+        const monthList = document.getElementById('month-list');
+        const sectionIds = []; // 用于存储每个section的id
+        const monthSet = new Set(); // 用于去重月份
+
+        albumData.forEach((group, index) => {
+            const date = new Date(group.date);
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const monthNum = String(month).padStart(2, '0'); // 转为两位数字，如 '03'
+            const sectionId = `section-${year}-${monthNum}`;
+            sectionIds.push(sectionId);
+
+            // 生成相册组
+            const section = document.createElement('section');
+            section.id = sectionId;
+            section.className = 'photo-group';
+
+            const photosHtml = group.photos.map(photo => `
+                <div class="photo-item">
+                    <div class="photo-loading"></div>
+                    <img 
+                        src="${photo.url}" 
+                        alt="${photo.alt}" 
+                        loading="lazy" 
+                        class="photo-img"
+                        onload="this.parentNode.querySelector('.photo-loading').style.display='none'"
+                    >
+                </div>
+            `).join('');
+
+            section.innerHTML = `
+                <div class="group-header">
+                    <h2 class="group-title">${group.groupTitle}</h2>
+                    <p class="group-desc">${group.groupDesc}</p>
+                </div>
+                <div class="photo-grid">
+                    ${photosHtml}
+                </div>
+            `;
+
+            albumContainer.appendChild(section);
+
+            // 生成目录项（显示为 YYYY-MM）- 去重处理
+            const monthKey = `${year}-${monthNum}`;
+            if (!monthSet.has(monthKey)) {
+                monthSet.add(monthKey);
+                
+                const navItem = document.createElement('a');
+                navItem.href = `#${sectionId}`;
+                navItem.className = 'month-item';
+                navItem.textContent = monthKey;
+                monthList.appendChild(navItem);
+            }
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('.month-item').forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                document.getElementById(targetId).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // 滚动监听：高亮当前月份
+        const sections = document.querySelectorAll('.photo-group');
+        const navItems = document.querySelectorAll('.month-item');
+
+        function highlightCurrentMonth() {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (window.scrollY >= sectionTop - 300) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navItems.forEach(item => {
+                item.classList.remove('active');
+                if (item.getAttribute('href') === `#${current}`) {
+                    item.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', highlightCurrentMonth);
+        highlightCurrentMonth(); // 初始调用
+
+        // 图片点击放大功能
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('photo-img')) {
+                const imgSrc = e.target.src;
+                const imgAlt = e.target.alt;
+                
+                // 创建模态框
+                const modal = document.createElement('div');
+                modal.className = 'modal';
+                
+                const modalImg = document.createElement('img');
+                modalImg.src = imgSrc;
+                modalImg.alt = imgAlt;
+                modalImg.className = 'modal-img';
+                
+                modal.appendChild(modalImg);
+                document.body.appendChild(modal);
+                
+                // 点击模态框关闭
+                modal.addEventListener('click', function() {
+                    document.body.removeChild(modal);
+                });
+
+                // ESC键关闭
+                document.addEventListener('keydown', function closeModal(e) {
+                    if (e.key === 'Escape') {
+                        document.body.removeChild(modal);
+                        document.removeEventListener('keydown', closeModal);
+                    }
+                });
+            }
+        });
     </script>
-      <script src="/js/rocinante.min.js"></script></body>
+</body>
 </html>
