@@ -7,5 +7,47 @@
     <generator>Hugo</generator>
     <language>en-us</language>
     <atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Chimichanga</title>
+      <link>http://localhost:1313/tags/chimichanga/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/chimichanga/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Example</title>
+      <link>http://localhost:1313/tags/example/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/example/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Prototype</title>
+      <link>http://localhost:1313/tags/prototype/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/prototype/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Samples</title>
+      <link>http://localhost:1313/tags/samples/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/samples/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Something</title>
+      <link>http://localhost:1313/tags/something/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/something/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Specimen</title>
+      <link>http://localhost:1313/tags/specimen/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/specimen/</guid>
+      <description></description>
+    </item>
   </channel>
 </rss>

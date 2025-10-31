@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>阿伦的仓库</title>
-    <link>http://localhost:1313/</link>
-    <description>Recent content on 阿伦的仓库</description>
+    <title>Photos on 阿伦的仓库</title>
+    <link>http://localhost:1313/photos/</link>
+    <description>Recent content in Photos on 阿伦的仓库</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 13 Jun 2025 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>花开四季</title>
-      <link>http://localhost:1313/post/%E8%8A%B1%E5%BC%80%E5%9B%9B%E5%AD%A3/</link>
-      <pubDate>Fri, 13 Jun 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/post/%E8%8A%B1%E5%BC%80%E5%9B%9B%E5%AD%A3/</guid>
-      <description>&lt;p&gt;看花却不认花，拍花却不识花&lt;/p&gt;&#xA;&lt;p&gt;按图索骥，略以小记&lt;/p&gt;</description>
-    </item>
+    <atom:link href="http://localhost:1313/photos/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>花开四季V2</title>
       <link>http://localhost:1313/photos/%E8%8A%B1%E5%BC%80%E5%9B%9B%E5%AD%A3v2/</link>
