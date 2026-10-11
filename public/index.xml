@@ -15,12 +15,5 @@
       <guid>https://example.com/post/%E8%8A%B1%E5%BC%80%E5%9B%9B%E5%AD%A3/</guid>
       <description>&lt;p&gt;看花却不认花，拍花却不识花&lt;/p&gt;&#xA;&lt;p&gt;按图索骥，略以小记&lt;/p&gt;</description>
     </item>
-    <item>
-      <title>花开四季V2</title>
-      <link>https://example.com/photos/%E8%8A%B1%E5%BC%80%E5%9B%9B%E5%AD%A3v2/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://example.com/photos/%E8%8A%B1%E5%BC%80%E5%9B%9B%E5%AD%A3v2/</guid>
-      <description>&lt;p&gt;看花却不认花，拍花却不识花&lt;/p&gt;&#xA;&lt;p&gt;按图索骥，略以小记&lt;/p&gt;&#xA;&lt;p&gt;&lt;a href=&#34;https://example.com/hua.html&#34;&gt;V2版本&lt;/a&gt;&lt;/p&gt;</description>
-    </item>
   </channel>
 </rss>
